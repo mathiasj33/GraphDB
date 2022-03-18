@@ -1,5 +1,6 @@
 SET(TEST_SOURCES
         graphDB/test_GraphDB.cpp
+        graphDB/dictionary/test_Dictionary.cpp
 
         Tester.cpp)
 
