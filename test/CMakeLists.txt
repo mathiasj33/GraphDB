@@ -1,6 +1,7 @@
 SET(TEST_SOURCES
         graphDB/test_GraphDB.cpp
-        graphDB/dictionary/test_Dictionary.cpp
+        graphDB/index/test_Dictionary.cpp
+        graphDB/index/test_IndexedTripleTable.cpp
 
         Tester.cpp)
 

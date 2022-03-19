@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
-#include "graphDB/dictionary/Dictionary.h"
+#include "graphDB/index/Dictionary.h"
 
-using namespace graph_db;
+using namespace graph_db::index;
 
 TEST(GraphDBTest, testDictionary) {
     Dictionary dict;

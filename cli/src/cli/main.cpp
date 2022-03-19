@@ -1,17 +1,19 @@
 #include <iostream>
-#include <unordered_map>
-#include <vector>
+#include "graphDB/index/Dictionary.h"
+#include "graphDB/index/IndexedTripleTable.h"
+
+using namespace graph_db::index;
 
 int main() {
-    std::unordered_map<int, std::unordered_map<int, std::vector<int>>> map{};
-    std::vector<int> values = {13, 19, 7};
-    std::unordered_map<int, std::vector<int>> tmp{};
-    tmp[3] = values;
-    tmp[2] = values;
-    map[1] = std::move(tmp);
-
-    std::cout << map[1][2][2] << std::endl;
-
-    std::cout << "Hello, World!" << std::endl;
-    return 0;
+    Dictionary dict;
+    IndexedTripleTable table;
+    table.Add(1, 3, 0);
+    table.Add(1, 3, 0);
+    table.Add(1, 3, 1);
+    table.Add(1, 2, 0);
+    table.Add(1, 4, 0);
+    table.Add(1, 3, 2);
+    table.Add(1, 2, 1);
+    table.Add(7, 3, 0);
+    table.Add(7, 4, 0);
 }
