@@ -18,7 +18,7 @@ namespace graph_db::index {
         return count++;
     }
 
-    std::string_view Dictionary::GetResource(unsigned int id) const {
+    std::string_view Dictionary::GetResource(unsigned id) const {
         return idToResource[id];
     }
 }
