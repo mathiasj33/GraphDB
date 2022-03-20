@@ -27,7 +27,7 @@ namespace graph_db::index {
 
         void Add(unsigned s, unsigned p, unsigned o);
 
-        bool Contains(unsigned s, unsigned p, unsigned o) const;
+        std::unique_ptr<evaluation::Scan> Contains(unsigned s, unsigned p, unsigned o) const;
         std::unique_ptr<evaluation::Scan> EvaluateS(unsigned p, unsigned o) const;
         std::unique_ptr<evaluation::Scan> EvaluateP(unsigned s, unsigned o) const;
         std::unique_ptr<evaluation::Scan> EvaluateO(unsigned s, unsigned p) const;
@@ -41,7 +41,7 @@ namespace graph_db::index {
 
     private:
         std::vector<Triple> table;
-        std::unordered_set<ThreeHashKey, ThreeHashKey::HashFunction> indexSPO;
+        std::unordered_map<ThreeHashKey, unsigned, ThreeHashKey::HashFunction> indexSPO;
         /**
          * Maps to the head of the s-list (first element) and keeps track of its size (second element).
          */

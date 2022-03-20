@@ -5,6 +5,7 @@
 #include "graphDB/evaluation/FullScan.h"
 #include "graphDB/evaluation/ScanSorO.h"
 #include "graphDB/evaluation/ScanP.h"
+#include "graphDB/evaluation/ScanSingleValue.h"
 #include <cassert>
 
 namespace graph_db::index {
@@ -16,13 +17,13 @@ namespace graph_db::index {
         if (indexSPO.find(key) != indexSPO.end()) {
             return;
         }
-        indexSPO.insert(key);
 
         Triple triple{s, p, o, Dictionary::INVALID_ID, Dictionary::INVALID_ID, Dictionary::INVALID_ID};
 
         // points to the new triple (once inserted)
         // note that we start indexing with 1, so that 0 can be used to indicate the end of a list
         unsigned triplePtr = table.size() + 1;
+        indexSPO[key] = triplePtr;
         UpdateSPIndex(triple, triplePtr);
         UpdateOPIndex(triple, triplePtr);
         UpdatePIndex(triple, triplePtr);
@@ -94,8 +95,10 @@ namespace graph_db::index {
         return table.size();
     }
 
-    bool IndexedTripleTable::Contains(unsigned int s, unsigned int p, unsigned int o) const {
-        return indexSPO.find(ThreeHashKey{s, p, o}) != indexSPO.end();
+    std::unique_ptr<evaluation::Scan> IndexedTripleTable::Contains(unsigned int s, unsigned int p, unsigned int o) const {
+        auto search = indexSPO.find(ThreeHashKey{s, p, o});
+        unsigned first = search == indexSPO.end() ? Dictionary::INVALID_ID : search->second;
+        return std::make_unique<ScanSingleValue>(*this, first);
     }
 
     std::unique_ptr<evaluation::Scan> IndexedTripleTable::EvaluateS(unsigned int p, unsigned int o) const {
