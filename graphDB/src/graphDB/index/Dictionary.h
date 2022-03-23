@@ -23,7 +23,7 @@ namespace graph_db::index {
         static unsigned INVALID_ID;
 
     private:
-        static unsigned count;
+        unsigned count = 1;  // we start counting at 1, so 0 can be used as an invalid id
         std::unordered_map<std::string, unsigned> resourceToId;
         std::vector<std::string> idToResource;
     };

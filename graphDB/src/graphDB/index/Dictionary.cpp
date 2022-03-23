@@ -1,7 +1,6 @@
 #include "Dictionary.h"
 
 namespace graph_db::index {
-    unsigned Dictionary::count = 1;  // we start counting at 1, so 0 can be used as an invalid id
     unsigned Dictionary::INVALID_ID = 0;
 
     Dictionary::Dictionary() {
