@@ -19,6 +19,8 @@ namespace graph_db::queryParser {
         [[nodiscard]] std::string GetSString() const;
         [[nodiscard]] std::string GetPString() const;
         [[nodiscard]] std::string GetOString() const;
+        bool operator==(const TriplePattern& rhs) const;
+        bool operator!=(const TriplePattern& rhs) const;
     };
 
 }

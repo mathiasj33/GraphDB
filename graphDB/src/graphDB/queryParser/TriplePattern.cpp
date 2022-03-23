@@ -36,4 +36,14 @@ namespace graph_db::queryParser {
     std::string TriplePattern::GetOString() const {
         return std::get<std::string>(o);
     }
+
+    bool TriplePattern::operator==(const TriplePattern& rhs) const {
+        return s == rhs.s &&
+               p == rhs.p &&
+               o == rhs.o;
+    }
+
+    bool TriplePattern::operator!=(const TriplePattern& rhs) const {
+        return !(rhs == *this);
+    }
 }
