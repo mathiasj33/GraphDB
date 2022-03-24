@@ -8,7 +8,8 @@ SET(TEST_SOURCES
         graphDB/evaluation/ScanTestFixture.h
         graphDB/evaluation/test_QueryAnswerer.cpp
         graphDB/queryParser/test_QueryLexer.cpp
-        graphDB/queryParser/test_QueryParser.cpp)
+        graphDB/queryParser/test_QueryParser.cpp
+        graphDB/fileParser/test_FileParser.cpp graphDB/fileParser/FileParserTestFixture.h)
 
 add_executable(tester ${TEST_SOURCES})
 target_link_libraries(tester PUBLIC
