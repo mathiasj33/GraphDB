@@ -26,4 +26,9 @@ TEST(GraphDBTest, testQueryParser) {
         FAIL();
     } catch (std::runtime_error& e) {
     }
+    try {
+        parser.ParseQuery("SELECT ?X WHERE {?X <hasAge> ?Y .} ?X");
+        FAIL();
+    } catch (std::runtime_error& e) {
+    }
 }

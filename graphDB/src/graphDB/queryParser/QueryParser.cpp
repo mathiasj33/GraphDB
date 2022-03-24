@@ -18,6 +18,7 @@ namespace graph_db::queryParser {
             query.triplePatterns.emplace_back(ParseTriplePattern());
         }
         ExpectToken(TokenType::RBRACE);
+        ExpectToken(TokenType::EOQ);
         return query;
     }
 
