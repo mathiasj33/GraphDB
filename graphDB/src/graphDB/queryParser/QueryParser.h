@@ -21,6 +21,7 @@ namespace graph_db::queryParser {
         TriplePattern ParseTriplePattern();
         std::variant<unsigned, std::string> ParseVariableOrResource();
         void ExpectToken(TokenType type);
+        void ExpectOneOf(const std::vector<TokenType>& types);
         bool PeekToken(TokenType type);
     };
 

@@ -17,8 +17,8 @@ namespace graph_db {
     public:
         GraphDB() : fileParser(dictionary), queryAnswerer(table, dictionary), queryParser(dictionary) {}
 
-        void LoadFile(const std::string& filename);
-        void PrintQueryAnswers(std::string_view query);
+        unsigned LoadFile(const std::string& filename);
+        unsigned ComputeQueryAnswers(std::string_view query);
 
     private:
         Dictionary dictionary;

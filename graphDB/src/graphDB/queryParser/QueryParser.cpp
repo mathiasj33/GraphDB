@@ -1,4 +1,5 @@
 #include "QueryParser.h"
+#include <algorithm>
 
 namespace graph_db::queryParser {
     Query QueryParser::ParseQuery(std::string_view queryString) {
@@ -8,7 +9,8 @@ namespace graph_db::queryParser {
 
     Query QueryParser::ParseQuery() {
         Query query;
-        ExpectToken(TokenType::SELECT);
+        query.print = PeekToken(TokenType::SELECT);
+        ExpectOneOf({TokenType::SELECT, TokenType::COUNT});
         while (PeekToken(TokenType::VARIABLE)) {
             query.projectionVariables.push_back(lexer->ConsumeToken().value);
         }
@@ -43,6 +45,12 @@ namespace graph_db::queryParser {
 
     void QueryParser::ExpectToken(TokenType type) {
         if (lexer->ConsumeToken().type != type) {
+            throw std::runtime_error("Error while parsing query.");
+        }
+    }
+
+    void QueryParser::ExpectOneOf(const std::vector<TokenType>& types) {
+        if (std::find(types.begin(), types.end(), lexer->ConsumeToken().type) == types.end()) {
             throw std::runtime_error("Error while parsing query.");
         }
     }

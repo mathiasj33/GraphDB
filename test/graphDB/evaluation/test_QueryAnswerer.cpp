@@ -35,6 +35,7 @@ TEST(GraphDBTest, testQueryAnswerer) {
 
     {
         Query query;
+        query.print = true;
         query.projectionVariables.emplace_back("X");
         query.projectionVariables.emplace_back("Y");
         query.projectionVariables.emplace_back("Z");
@@ -42,44 +43,54 @@ TEST(GraphDBTest, testQueryAnswerer) {
         query.triplePatterns.emplace_back(TriplePattern{"X", r, "Y"});
         query.triplePatterns.emplace_back(TriplePattern{"Y", r, "Z"});
         query.triplePatterns.emplace_back(TriplePattern{"Z", r, "W"});
-        answerer.PrintQueryAnswers(query);
-        ASSERT_EQ(1, answerer.CountQueryAnswers(query));
+        ASSERT_EQ(1, answerer.ComputeQueryAnswers(query));
     }
 
     {
         Query query;
+        query.print = true;
         query.projectionVariables.emplace_back("X");
         query.triplePatterns.emplace_back(TriplePattern{"X", r, "Y"});
         query.triplePatterns.emplace_back(TriplePattern{"X", s, "Z"});
-        answerer.PrintQueryAnswers(query);
-        ASSERT_EQ(3, answerer.CountQueryAnswers(query));
+        ASSERT_EQ(3, answerer.ComputeQueryAnswers(query));
     }
 
     {
         Query query;
+        query.print = true;
         query.projectionVariables.emplace_back("Y");
         query.projectionVariables.emplace_back("X");
         query.triplePatterns.emplace_back(TriplePattern{"X", s, "X"});
         query.triplePatterns.emplace_back(TriplePattern{"X", r, "Y"});
         query.triplePatterns.emplace_back(TriplePattern{"Y", s, one});
-        answerer.PrintQueryAnswers(query);
-        ASSERT_EQ(1, answerer.CountQueryAnswers(query));
+        ASSERT_EQ(1, answerer.ComputeQueryAnswers(query));
     }
 
     {
         Query query;
+        query.print = true;
         query.projectionVariables.emplace_back("Y");
         query.projectionVariables.emplace_back("X");
         query.triplePatterns.emplace_back(TriplePattern{"X", r, "X"});
         query.triplePatterns.emplace_back(TriplePattern{"X", "Y", "Z"});
-        answerer.PrintQueryAnswers(query);
-        ASSERT_EQ(0, answerer.CountQueryAnswers(query));
+        ASSERT_EQ(0, answerer.ComputeQueryAnswers(query));
     }
 
-
-    ASSERT_EQ("<a>\t<b>\t<c>\t<d>\n"
-              "<c>\n<b>\n<a>\n"
-              "<d>\t<c>\n", stream.str());
-
     std::cout.rdbuf(old_buf); // reset std::cout
+
+    ASSERT_EQ("----------\n"
+              "?X\t?Y\t?Z\t?W\n"
+              "<a>\t<b>\t<c>\t<d>\n"
+              "----------\n"
+              "----------\n"
+              "?X\n"
+              "<c>\n<b>\n<a>\n"
+              "----------\n"
+              "----------\n"
+              "?Y\t?X\n"
+              "<d>\t<c>\n"
+              "----------\n"
+              "----------\n"
+              "?Y\t?X\n"
+              "----------\n", stream.str());
 }

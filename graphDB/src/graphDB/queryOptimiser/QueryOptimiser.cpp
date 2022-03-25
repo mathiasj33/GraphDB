@@ -34,7 +34,7 @@ namespace graph_db::queryOptimiser {
             }
             remainingPatterns.erase(*bestPattern);
         }
-        return Query{query.projectionVariables, std::move(plan)};
+        return Query{query.print,query.projectionVariables, std::move(plan)};
     }
 
     unsigned QueryOptimiser::ComputeSelectivity(const TriplePattern& pattern,

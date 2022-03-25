@@ -9,6 +9,7 @@ namespace graph_db::queryParser {
 
     enum TokenType {
         SELECT,
+        COUNT,
         WHERE,
         VARIABLE,
         RESOURCE,
@@ -54,6 +55,7 @@ namespace graph_db::queryParser {
         unsigned pos = 0;
         std::unique_ptr<Token> nextToken = nullptr;
         std::unordered_map<std::string, TokenType> keywords = {{"select", TokenType::SELECT},
+                                                               {"count", TokenType::COUNT},
                                                                {"where",  TokenType::WHERE}};
 
         Token LexVariable();

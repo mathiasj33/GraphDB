@@ -1,13 +1,17 @@
 #include "GraphDB.h"
 #include <cstdio>
 #include <iostream>
+#include "graphDB/queryOptimiser/QueryOptimiser.h"
+
+using namespace graph_db::queryOptimiser;
 
 namespace graph_db {
-    void GraphDB::LoadFile(const std::string& filename) {
+    unsigned GraphDB::LoadFile(const std::string& filename) {
+        unsigned count = 0;
         FILE* file = fopen(filename.c_str(), "r");
         if(file == nullptr) {
             std::cout << "Error opening file." << std::endl;
-            return;
+            return 0;
         }
         const int BUFFER_SIZE = 1024;
         char buffer[BUFFER_SIZE];  // TODO: assumption: no lines longer than 1024 characters
@@ -18,12 +22,15 @@ namespace graph_db {
                 break;
             }
             table.Add(s, p, o);
+            ++count;
         }
         fclose(file);
+        return count;
     }
 
-    void GraphDB::PrintQueryAnswers(std::string_view queryString) {
+    unsigned GraphDB::ComputeQueryAnswers(std::string_view queryString) {
         Query query = queryParser.ParseQuery(queryString);
-        queryAnswerer.PrintQueryAnswers(query);
+        Query optimisedQuery = QueryOptimiser::OptimiseQuery(query);
+        return queryAnswerer.ComputeQueryAnswers(optimisedQuery);
     }
 }

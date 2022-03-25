@@ -16,17 +16,16 @@ namespace graph_db::evaluation {
         explicit QueryAnswerer(const IndexedTripleTable& table, const Dictionary& dictionary)
                 : table(table), dictionary(dictionary) {}
 
-        void PrintQueryAnswers(const Query& query);
-        unsigned CountQueryAnswers(const Query& query);
+        unsigned ComputeQueryAnswers(const Query& query);
 
     private:
         const IndexedTripleTable& table;
         const Dictionary& dictionary;
 
-        unsigned ComputeQueryAnswers(const Query& query, bool print);
-        void ComputeQueryAnswers(const Query& query, bool print, unsigned long index,
+        void ComputeQueryAnswers(const Query& query, unsigned long index,
                                      std::unordered_map<std::string, unsigned>& assignment,
                                      unsigned& count);
+        static void PrintVariableNames(const Query& query);
         /**
          * Returns a new TriplePattern where all variables that have been assigned in {@param assignment} are
          * replaced with their respective resource ids.

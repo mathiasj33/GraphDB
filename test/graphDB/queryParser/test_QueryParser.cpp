@@ -15,11 +15,15 @@ TEST(GraphDBTest, testQueryParser) {
             TriplePattern{"Z", 1, 2},
             TriplePattern{"myVariable", "Z", 3},
     };
+    ASSERT_TRUE(result.print);
     ASSERT_EQ(expectedVariables, result.projectionVariables);
     ASSERT_EQ(expectedPatterns, result.triplePatterns);
 
     ASSERT_EQ("<hasAge>", dictionary.GetResource(dictionary.GetId("<hasAge>")));
     ASSERT_EQ("\"42\"", dictionary.GetResource(dictionary.GetId("\"42\"")));
+
+    result = parser.ParseQuery("COUNT ?X ?Y WHERE { ?X <hasAge> ?Y . ?Z <hasAge> \"42\" . ?myVariable ?Z <Object>.}");
+    ASSERT_FALSE(result.print);
 
     try {
         parser.ParseQuery("SELECT ?X WHERE ?X <hasAge> ?Y .");  // missing braces
@@ -30,5 +34,10 @@ TEST(GraphDBTest, testQueryParser) {
         parser.ParseQuery("SELECT ?X WHERE {?X <hasAge> ?Y .} ?X");
         FAIL();
     } catch (std::runtime_error& e) {
+    }
+    try {
+        parser.ParseQuery("SELECT COUNT ?X WHERE { ?X <hasAge> ?Y .}");
+        FAIL();
+    } catch (std::runtime_error& error) {
     }
 }

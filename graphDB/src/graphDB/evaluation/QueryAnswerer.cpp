@@ -4,26 +4,36 @@
 #include "Scan.h"
 
 namespace graph_db::evaluation {
-    void QueryAnswerer::PrintQueryAnswers(const Query& query) {
-        ComputeQueryAnswers(query, true);
-    }
-
-    unsigned QueryAnswerer::CountQueryAnswers(const Query& query) {
-        return ComputeQueryAnswers(query, false);
-    }
-
-    unsigned QueryAnswerer::ComputeQueryAnswers(const Query& query, bool print) {
+    unsigned QueryAnswerer::ComputeQueryAnswers(const Query& query) {
         std::unordered_map<std::string, unsigned int> assignment;
         unsigned count = 0;
-        ComputeQueryAnswers(query, print, 0, assignment, count);
+        if(query.print) {
+            std::cout << "----------" << std::endl;
+            PrintVariableNames(query);
+        }
+        ComputeQueryAnswers(query, 0, assignment, count);
+        if(query.print) {
+            std::cout << "----------" << std::endl;
+        }
         return count;
     }
 
-    void QueryAnswerer::ComputeQueryAnswers(const Query& query, bool print, unsigned long index,
+    void QueryAnswerer::PrintVariableNames(const Query& query) {
+        for (unsigned long i = 0; i < query.projectionVariables.size(); ++i) {
+            std::cout << '?' << query.projectionVariables[i];
+            if(i == query.projectionVariables.size() - 1) {
+                std::cout << std::endl;
+            } else {
+                std::cout << '\t';
+            }
+        }
+    }
+
+    void QueryAnswerer::ComputeQueryAnswers(const Query& query, unsigned long index,
                                             std::unordered_map<std::string, unsigned int>& assignment,
                                             unsigned& count) {
         if (index >= query.triplePatterns.size()) {
-            if (print) {
+            if (query.print) {
                 PrintAnswer(query, assignment);
             }
             ++count;
@@ -35,7 +45,7 @@ namespace graph_db::evaluation {
                 unsigned s, p, o;
                 scan->GetNext(s, p, o);
                 UpdateAssignment(updatedPattern, assignment, s, p, o);
-                ComputeQueryAnswers(query, print, index + 1, assignment, count);
+                ComputeQueryAnswers(query, index + 1, assignment, count);
                 UndoAssignmentUpdate(updatedPattern, assignment);
             }
         }

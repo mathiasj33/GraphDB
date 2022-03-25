@@ -9,12 +9,16 @@ TEST(GraphDBTest, integrationTest) {  // TODO: add more tests (look at model ans
 
     GraphDB db;
     db.LoadFile("data/familyGuy.ttl");
-    db.PrintQueryAnswers("SELECT ?X ?Z WHERE { ?X <hasAge> ?Y . ?Z <hasAge> ?Y . }");
-    ASSERT_EQ("<Brian>\t<Brian>\n"
+    unsigned count = db.ComputeQueryAnswers("SELECT ?X ?Z WHERE { ?X <hasAge> ?Y . ?Z <hasAge> ?Y . }");
+    std::cout.rdbuf(old_buf); // reset std::cout
+
+    ASSERT_EQ(5, count);
+    ASSERT_EQ("----------\n"
+              "?X\t?Z\n"
+              "<Brian>\t<Brian>\n"
               "<Lois>\t<Peter>\n"
               "<Lois>\t<Lois>\n"
               "<Peter>\t<Peter>\n"
-              "<Peter>\t<Lois>\n", stream.str());
-
-    std::cout.rdbuf(old_buf); // reset std::cout
+              "<Peter>\t<Lois>\n"
+              "----------\n", stream.str());
 }
