@@ -13,6 +13,7 @@ namespace graph_db::queryParser {
         [[nodiscard]] bool SisVariable() const;
         [[nodiscard]] bool PisVariable() const;
         [[nodiscard]] bool OisVariable() const;
+        [[nodiscard]] std::vector<std::string> GetVariables() const;
         [[nodiscard]] unsigned GetSUnsigned() const;
         [[nodiscard]] unsigned GetPUnsigned() const;
         [[nodiscard]] unsigned GetOUnsigned() const;
@@ -21,6 +22,16 @@ namespace graph_db::queryParser {
         [[nodiscard]] std::string GetOString() const;
         bool operator==(const TriplePattern& rhs) const;
         bool operator!=(const TriplePattern& rhs) const;
+
+        struct HashFunction {
+            std::size_t operator()(const TriplePattern& key) const {
+                std::size_t res = 17;
+                res = res * 31 + std::hash<std::variant<unsigned, std::string>>()(key.s);
+                res = res * 31 + std::hash<std::variant<unsigned, std::string>>()(key.p);
+                res = res * 31 + std::hash<std::variant<unsigned, std::string>>()(key.o);
+                return res;
+            }
+        };
     };
 
 }

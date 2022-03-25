@@ -1,3 +1,4 @@
+#include <vector>
 #include "TriplePattern.h"
 
 namespace graph_db::queryParser {
@@ -11,6 +12,20 @@ namespace graph_db::queryParser {
 
     bool TriplePattern::OisVariable() const {
         return std::holds_alternative<std::string>(o);
+    }
+
+    std::vector<std::string> TriplePattern::GetVariables() const {
+        std::vector<std::string> variables;
+        if(SisVariable()) {
+            variables.emplace_back(GetSString());
+        }
+        if(PisVariable()) {
+            variables.emplace_back(GetPString());
+        }
+        if(OisVariable()) {
+            variables.emplace_back(GetOString());
+        }
+        return variables;
     }
 
     unsigned TriplePattern::GetSUnsigned() const {

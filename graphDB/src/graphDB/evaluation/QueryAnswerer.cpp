@@ -123,14 +123,8 @@ namespace graph_db::evaluation {
 
     void QueryAnswerer::UndoAssignmentUpdate(const TriplePattern& triplePattern,
                                              std::unordered_map<std::string, unsigned int>& assignment) {
-        if (triplePattern.SisVariable()) {
-            assignment.erase(triplePattern.GetSString());
-        }
-        if (triplePattern.PisVariable()) {
-            assignment.erase(triplePattern.GetPString());
-        }
-        if (triplePattern.OisVariable()) {
-            assignment.erase(triplePattern.GetOString());
+        for (const std::string& var: triplePattern.GetVariables()) {
+            assignment.erase(var);
         }
     }
 }
