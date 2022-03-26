@@ -1,4 +1,5 @@
 *.pdf
 cmake-build-*
-*.ttl
+LUBM-*
+queries
 
