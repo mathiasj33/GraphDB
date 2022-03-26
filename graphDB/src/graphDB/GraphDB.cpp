@@ -28,9 +28,12 @@ namespace graph_db {
         return count;
     }
 
-    unsigned GraphDB::ComputeQueryAnswers(std::string_view queryString) {
+    unsigned GraphDB::ComputeQueryAnswers(std::string_view queryString, bool countOnly) {
         Query query = queryParser.ParseQuery(queryString);
         Query optimisedQuery = QueryOptimiser::OptimiseQuery(query);
+        if(countOnly) {
+            optimisedQuery.print = false;
+        }
         return queryAnswerer.ComputeQueryAnswers(optimisedQuery);
     }
 }

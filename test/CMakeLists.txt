@@ -11,7 +11,8 @@ SET(TEST_SOURCES
         graphDB/queryParser/test_QueryParser.cpp
         graphDB/fileParser/test_FileParser.cpp
         graphDB/fileParser/FileParserTestFixture.h
-        graphDB/queryOptimiser/test_QueryOptimiser.cpp)
+        graphDB/queryOptimiser/test_QueryOptimiser.cpp
+        graphDB/GraphDBTestFixture.h)
 
 add_executable(tester ${TEST_SOURCES})
 target_link_libraries(tester PUBLIC
