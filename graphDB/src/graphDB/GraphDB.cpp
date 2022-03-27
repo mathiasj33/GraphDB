@@ -30,10 +30,10 @@ namespace graph_db {
 
     unsigned GraphDB::ComputeQueryAnswers(std::string_view queryString, bool countOnly) {
         Query query = queryParser.ParseQuery(queryString);
-        Query optimisedQuery = QueryOptimiser::OptimiseQuery(query);
         if(countOnly) {
-            optimisedQuery.print = false;
+            query.print = false;
         }
+        Query optimisedQuery = QueryOptimiser::OptimiseQuery(query);
         return queryAnswerer.ComputeQueryAnswers(optimisedQuery);
     }
 }

@@ -8,6 +8,7 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fsanitize=address")
 
 add_subdirectory(graphDB)
 add_subdirectory(cli)
+add_subdirectory(benchmark)
 
 find_package(GTest)
 if (GTEST_FOUND)

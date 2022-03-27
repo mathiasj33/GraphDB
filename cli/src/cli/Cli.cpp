@@ -50,14 +50,14 @@ namespace graph_db::cli {
         auto start = high_resolution_clock::now();
         unsigned count = db.LoadFile(filename);
         double elapsedTime = GetElapsedTime(start);
-        std::cout << count << " triples loaded in " << elapsedTime << " ms." << std::endl;
+        std::cout << count << " triples loaded in " << elapsedTime << "ms." << std::endl;
     }
 
     void Cli::ExecuteQueryCommand(const std::string& query) {
         auto start = high_resolution_clock::now();
         unsigned count = db.ComputeQueryAnswers(query);
         double elapsedTime = GetElapsedTime(start);
-        std::cout << count << " results returned in " << elapsedTime << " ms." << std::endl;
+        std::cout << count << " results returned in " << elapsedTime << "ms." << std::endl;
     }
 
     void Cli::ExecuteQuitCommand() {
