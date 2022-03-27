@@ -14,9 +14,6 @@ namespace graph_db::queryParser {
         [[nodiscard]] bool PisVariable() const;
         [[nodiscard]] bool OisVariable() const;
         [[nodiscard]] std::vector<std::string> GetVariables() const;
-        [[nodiscard]] unsigned GetSUnsigned() const;
-        [[nodiscard]] unsigned GetPUnsigned() const;
-        [[nodiscard]] unsigned GetOUnsigned() const;
         [[nodiscard]] std::string GetSString() const;
         [[nodiscard]] std::string GetPString() const;
         [[nodiscard]] std::string GetOString() const;

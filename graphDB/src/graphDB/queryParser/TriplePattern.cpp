@@ -28,18 +28,6 @@ namespace graph_db::queryParser {
         return variables;
     }
 
-    unsigned TriplePattern::GetSUnsigned() const {
-        return std::get<unsigned>(s);
-    }
-
-    unsigned TriplePattern::GetPUnsigned() const {
-        return std::get<unsigned>(p);
-    }
-
-    unsigned TriplePattern::GetOUnsigned() const {
-        return std::get<unsigned>(o);
-    }
-
     std::string TriplePattern::GetSString() const {
         return std::get<std::string>(s);
     }

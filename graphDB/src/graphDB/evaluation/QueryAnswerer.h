@@ -22,24 +22,35 @@ namespace graph_db::evaluation {
         const IndexedTripleTable& table;
         const Dictionary& dictionary;
 
-        void ComputeQueryAnswers(const Query& query, unsigned long index,
-                                     std::unordered_map<std::string, unsigned>& assignment,
-                                     unsigned& count);
+        struct ScanInformation {
+            bool sVariable = false;
+            bool pVariable = false;
+            bool oVariable = false;
+            bool spEqual = false;
+            bool poEqual = false;
+            bool soEqual = false;
+            unsigned s = 0;
+            unsigned p = 0;
+            unsigned o = 0;
+        };
+
         static void PrintVariableNames(const Query& query);
-        /**
-         * Returns a new TriplePattern where all variables that have been assigned in {@param assignment} are
-         * replaced with their respective resource ids.
-         */
-        static TriplePattern UpdateTriplePattern(const TriplePattern& triplePattern,
-                                          const std::unordered_map<std::string, unsigned>& assignment);
-        static std::variant<unsigned, std::string> GetUpdatedVariant(std::variant<unsigned, std::string> variant,
-                                                                     const std::unordered_map<std::string, unsigned>& assignment);
+
+        void ComputeQueryAnswers(const Query& query, unsigned long index,
+                                 std::unordered_map<std::string, unsigned>& assignment,
+                                 unsigned& count);
         void PrintAnswer(const Query& query, const std::unordered_map<std::string, unsigned>& assignment);
-        std::unique_ptr<Scan> GetScan(const TriplePattern& triplePattern);
-        static void UpdateAssignment(const TriplePattern& triplePattern, std::unordered_map<std::string, unsigned>& assignment,
-                              unsigned s, unsigned p, unsigned o);
-        static void UndoAssignmentUpdate(const TriplePattern& triplePattern,
-                                  std::unordered_map<std::string, unsigned>& assignment);
+        static ScanInformation GetScanInformation(const TriplePattern& triplePattern,
+                                                  const std::unordered_map<std::string, unsigned>& assignment);
+        static void
+        UpdateScanInformation(const std::variant<unsigned, std::string>& variant, bool& varOut, unsigned& vOut,
+                              const std::unordered_map<std::string, unsigned>& assignment);
+        std::unique_ptr<Scan> GetScan(const ScanInformation& scanInfo);
+        static void
+        UpdateAssignment(const TriplePattern& triplePattern, const ScanInformation& scanInfo, unsigned s, unsigned p,
+                         unsigned o, std::unordered_map<std::string, unsigned>& assignment);
+        static void UndoAssignmentUpdate(const TriplePattern& triplePattern, const ScanInformation& scanInfo,
+                                         std::unordered_map<std::string, unsigned>& assignment);
     };
 
 }

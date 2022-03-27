@@ -7,12 +7,12 @@ namespace graph_db::evaluation {
     unsigned QueryAnswerer::ComputeQueryAnswers(const Query& query) {
         std::unordered_map<std::string, unsigned int> assignment;
         unsigned count = 0;
-        if(query.print) {
+        if (query.print) {
             std::cout << "----------" << std::endl;
             PrintVariableNames(query);
         }
         ComputeQueryAnswers(query, 0, assignment, count);
-        if(query.print) {
+        if (query.print) {
             std::cout << "----------" << std::endl;
         }
         return count;
@@ -21,7 +21,7 @@ namespace graph_db::evaluation {
     void QueryAnswerer::PrintVariableNames(const Query& query) {
         for (unsigned long i = 0; i < query.projectionVariables.size(); ++i) {
             std::cout << '?' << query.projectionVariables[i];
-            if(i == query.projectionVariables.size() - 1) {
+            if (i == query.projectionVariables.size() - 1) {
                 std::cout << std::endl;
             } else {
                 std::cout << '\t';
@@ -39,15 +39,44 @@ namespace graph_db::evaluation {
             ++count;
         } else {
             const TriplePattern& pattern = query.triplePatterns[index];
-            const TriplePattern updatedPattern = UpdateTriplePattern(pattern, assignment);
-            std::unique_ptr<Scan> scan = GetScan(updatedPattern);
+            ScanInformation scanInfo = GetScanInformation(pattern, assignment);
+            std::unique_ptr<Scan> scan = GetScan(scanInfo);
             while (!scan->ReachedEnd()) {
                 unsigned s, p, o;
                 scan->GetNext(s, p, o);
-                UpdateAssignment(updatedPattern, assignment, s, p, o);
+                UpdateAssignment(pattern, scanInfo, s, p, o, assignment);
                 ComputeQueryAnswers(query, index + 1, assignment, count);
-                UndoAssignmentUpdate(updatedPattern, assignment);
+                UndoAssignmentUpdate(pattern, scanInfo, assignment);
             }
+        }
+    }
+
+    QueryAnswerer::ScanInformation QueryAnswerer::GetScanInformation(const TriplePattern& triplePattern,
+                                                                     const std::unordered_map<std::string, unsigned int>& assignment) {
+        ScanInformation scanInfo;
+        scanInfo.spEqual = triplePattern.s == triplePattern.p;
+        scanInfo.poEqual = triplePattern.p == triplePattern.o;
+        scanInfo.soEqual = triplePattern.s == triplePattern.o;
+        UpdateScanInformation(triplePattern.s, scanInfo.sVariable, scanInfo.s, assignment);
+        UpdateScanInformation(triplePattern.p, scanInfo.pVariable, scanInfo.p, assignment);
+        UpdateScanInformation(triplePattern.o, scanInfo.oVariable, scanInfo.o, assignment);
+        return scanInfo;
+    }
+
+    void QueryAnswerer::UpdateScanInformation(const std::variant<unsigned int, std::string>& variant, bool& varOut,
+                                              unsigned int& vOut,
+                                              const std::unordered_map<std::string, unsigned int>& assignment) {
+        if (std::holds_alternative<std::string>(variant)) {
+            auto search = assignment.find(std::get<std::string>(variant));
+            if (search != assignment.end()) {
+                varOut = false;
+                vOut = search->second;
+            } else {
+                varOut = true;
+            }
+        } else {
+            varOut = false;
+            vOut = std::get<unsigned>(variant);
         }
     }
 
@@ -66,75 +95,57 @@ namespace graph_db::evaluation {
         }
     }
 
-    TriplePattern QueryAnswerer::UpdateTriplePattern(const TriplePattern& triplePattern,
-                                                     const std::unordered_map<std::string, unsigned>& assignment) {
-        TriplePattern updatedPattern;
-        updatedPattern.s = GetUpdatedVariant(triplePattern.s, assignment);
-        updatedPattern.p = GetUpdatedVariant(triplePattern.p, assignment);
-        updatedPattern.o = GetUpdatedVariant(triplePattern.o, assignment);
-        return updatedPattern;
-    }
-
-    std::variant<unsigned, std::string>
-    QueryAnswerer::GetUpdatedVariant(std::variant<unsigned int, std::string> variant,
-                                     const std::unordered_map<std::string, unsigned int>& assignment) {
-        if (std::holds_alternative<std::string>(variant)) {
-            auto search = assignment.find(std::get<std::string>(variant));
-            if (search != assignment.end()) {
-                return search->second;
-            }
-        }
-        return variant;
-    }
-
-    std::unique_ptr<Scan> QueryAnswerer::GetScan(const TriplePattern& triplePattern) {
-        bool spEqual = triplePattern.s == triplePattern.p;
-        bool poEqual = triplePattern.p == triplePattern.o;
-        bool soEqual = triplePattern.s == triplePattern.o;
-
-        bool sv = triplePattern.SisVariable();
-        bool pv = triplePattern.PisVariable();
-        bool ov = triplePattern.OisVariable();
+    std::unique_ptr<Scan> QueryAnswerer::GetScan(const ScanInformation& scanInfo) {
+        bool sv = scanInfo.sVariable;
+        bool pv = scanInfo.pVariable;
+        bool ov = scanInfo.oVariable;
 
         if (sv && pv && ov) {
-            return table.EvaluateSPO(spEqual, poEqual, soEqual);
+            return table.EvaluateSPO(scanInfo.spEqual, scanInfo.poEqual, scanInfo.soEqual);
         } else if (sv && pv && !ov) {
-            return table.EvaluateSP(triplePattern.GetOUnsigned(), spEqual);
+            return table.EvaluateSP(scanInfo.o, scanInfo.spEqual);
         } else if (sv && !pv && ov) {
-            return table.EvaluateSO(triplePattern.GetPUnsigned(), soEqual);
+            return table.EvaluateSO(scanInfo.p, scanInfo.soEqual);
         } else if (sv && !pv && !ov) {
-            return table.EvaluateS(triplePattern.GetPUnsigned(), triplePattern.GetOUnsigned());
+            return table.EvaluateS(scanInfo.p, scanInfo.o);
         } else if (!sv && pv && ov) {
-            return table.EvaluatePO(triplePattern.GetSUnsigned(), poEqual);
+            return table.EvaluatePO(scanInfo.s, scanInfo.poEqual);
         } else if (!sv && pv && !ov) {
-            return table.EvaluateP(triplePattern.GetSUnsigned(), triplePattern.GetOUnsigned());
+            return table.EvaluateP(scanInfo.s, scanInfo.o);
         } else if (!sv && !pv && ov) {
-            return table.EvaluateO(triplePattern.GetSUnsigned(), triplePattern.GetPUnsigned());
+            return table.EvaluateO(scanInfo.s, scanInfo.p);
         } else if (!sv && !pv && !ov) {
-            return table.Contains(triplePattern.GetSUnsigned(), triplePattern.GetPUnsigned(),
-                                  triplePattern.GetOUnsigned());
+            return table.Contains(scanInfo.s, scanInfo.p, scanInfo.o);
         }
         assert(false);
     }
 
     void QueryAnswerer::UpdateAssignment(const TriplePattern& triplePattern,
-                                         std::unordered_map<std::string, unsigned int>& assignment,
-                                         unsigned int s, unsigned int p, unsigned int o) {
-        if (triplePattern.SisVariable()) {
+                                         const ScanInformation& scanInfo,
+                                         unsigned s, unsigned p, unsigned o,
+                                         std::unordered_map<std::string, unsigned int>& assignment) {
+        if (scanInfo.sVariable) {
             assignment[triplePattern.GetSString()] = s;
         }
-        if (triplePattern.PisVariable()) {
+        if (scanInfo.pVariable) {
             assignment[triplePattern.GetPString()] = p;
         }
-        if (triplePattern.OisVariable()) {
+        if (scanInfo.oVariable) {
             assignment[triplePattern.GetOString()] = o;
         }
     }
 
     void QueryAnswerer::UndoAssignmentUpdate(const TriplePattern& triplePattern,
+                                             const ScanInformation& scanInfo,
                                              std::unordered_map<std::string, unsigned int>& assignment) {
-        for (const std::string& var: triplePattern.GetVariables()) {
-            assignment.erase(var);
+        if (scanInfo.sVariable) {
+            assignment.erase(triplePattern.GetSString());
+        }
+        if (scanInfo.pVariable) {
+            assignment.erase(triplePattern.GetPString());
+        }
+        if (scanInfo.oVariable) {
+            assignment.erase(triplePattern.GetOString());
         }
     }
 }
