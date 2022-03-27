@@ -3,7 +3,7 @@
 #include <gtest/gtest.h>
 #include "graphDB/fileParser/FileParser.h"
 
-using namespace graph_db::fileParser;
+using namespace graph_db::file_parser;
 
 class FileParserTestFixture: public ::testing::Test {
 public:

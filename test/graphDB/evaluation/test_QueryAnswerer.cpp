@@ -6,7 +6,7 @@
 
 using namespace graph_db::index;
 using namespace graph_db::evaluation;
-using namespace graph_db::queryParser;
+using namespace graph_db::query_parser;
 
 TEST(GraphDBTest, testQueryAnswerer) {
     std::stringstream stream;

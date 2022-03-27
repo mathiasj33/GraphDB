@@ -4,9 +4,9 @@
 #include "graphDB/queryParser/Query.h"
 #include <memory>
 
-using namespace graph_db::queryParser;
+using namespace graph_db::query_parser;
 
-namespace graph_db::queryOptimiser {
+namespace graph_db::query_optimiser {
 
     class QueryOptimiser {
     public:

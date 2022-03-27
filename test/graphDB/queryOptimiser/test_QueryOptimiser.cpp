@@ -2,8 +2,8 @@
 #include "graphDB/queryOptimiser/QueryOptimiser.h"
 #include "graphDB/queryParser/QueryParser.h"
 
-using namespace graph_db::queryOptimiser;
-using namespace graph_db::queryParser;
+using namespace graph_db::query_optimiser;
+using namespace graph_db::query_parser;
 
 TEST(GraphDBTest, testQueryOptimiser) {
     Dictionary dictionary;

@@ -2,7 +2,7 @@
 #include <algorithm>
 #include <cassert>
 
-namespace graph_db::queryOptimiser {
+namespace graph_db::query_optimiser {
 
     Query QueryOptimiser::OptimiseQuery(const Query& query) {
         std::vector<TriplePattern> plan;

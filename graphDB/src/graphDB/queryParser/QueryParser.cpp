@@ -1,7 +1,7 @@
 #include "QueryParser.h"
 #include <algorithm>
 
-namespace graph_db::queryParser {
+namespace graph_db::query_parser {
     Query QueryParser::ParseQuery(std::string_view queryString) {
         lexer = std::make_unique<QueryLexer>(std::string(queryString));
         return ParseQuery();

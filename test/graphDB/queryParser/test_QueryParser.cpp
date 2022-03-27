@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include "graphDB/queryParser/QueryParser.h"
 
-using namespace graph_db::queryParser;
+using namespace graph_db::query_parser;
 
 TEST(GraphDBTest, testQueryParser) {
     std::string query = "SELECT ?X ?Y WHERE { ?X <hasAge> ?Y . ?Z <hasAge> \"42\" . ?myVariable ?Z <Object>.}";

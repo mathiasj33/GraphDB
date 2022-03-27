@@ -1,7 +1,7 @@
 #include <vector>
 #include "TriplePattern.h"
 
-namespace graph_db::queryParser {
+namespace graph_db::query_parser {
     bool TriplePattern::SisVariable() const {
         return std::holds_alternative<std::string>(s);
     }

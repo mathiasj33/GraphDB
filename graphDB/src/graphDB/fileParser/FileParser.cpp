@@ -1,6 +1,6 @@
 #include "FileParser.h"
 
-namespace graph_db::fileParser {
+namespace graph_db::file_parser {
     bool FileParser::ParseLine(const char* line, unsigned n, unsigned int& s, unsigned int& p, unsigned int& o) {
         current = 0;
         this->line = line;

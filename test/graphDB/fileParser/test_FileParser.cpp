@@ -2,7 +2,7 @@
 #include "graphDB/fileParser/FileParser.h"
 #include "FileParserTestFixture.h"
 
-using namespace graph_db::fileParser;
+using namespace graph_db::file_parser;
 
 TEST_F(FileParserTestFixture, testFileParser) {
     ASSERT_PARSE_LINE("<a> <b> <c> .", 1, 2, 3);

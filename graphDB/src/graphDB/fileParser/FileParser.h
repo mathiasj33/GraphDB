@@ -4,7 +4,7 @@
 
 using namespace graph_db::index;
 
-namespace graph_db::fileParser {
+namespace graph_db::file_parser {
 
     class FileParser {
     public:

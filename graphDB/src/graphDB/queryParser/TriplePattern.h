@@ -3,7 +3,7 @@
 #include <variant>
 #include <string>
 
-namespace graph_db::queryParser {
+namespace graph_db::query_parser {
 
     struct TriplePattern {
         std::variant<unsigned, std::string> s;

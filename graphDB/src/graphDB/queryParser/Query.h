@@ -4,7 +4,7 @@
 #include <vector>
 #include "TriplePattern.h"
 
-namespace graph_db::queryParser {
+namespace graph_db::query_parser {
 
     struct Query {
         bool print;

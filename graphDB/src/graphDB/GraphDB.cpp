@@ -3,7 +3,7 @@
 #include <iostream>
 #include "graphDB/queryOptimiser/QueryOptimiser.h"
 
-using namespace graph_db::queryOptimiser;
+using namespace graph_db::query_optimiser;
 
 namespace graph_db {
     unsigned GraphDB::LoadFile(const std::string& filename) {

@@ -5,7 +5,7 @@
 #include <unordered_map>
 #include <ostream>
 
-namespace graph_db::queryParser {
+namespace graph_db::query_parser {
 
     enum TokenType {
         SELECT,

@@ -6,7 +6,7 @@
 
 using namespace graph_db::index;
 
-namespace graph_db::queryParser {
+namespace graph_db::query_parser {
 
     class QueryParser {
     public:

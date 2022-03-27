@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include "graphDB/queryParser/QueryLexer.h"
 
-using namespace graph_db::queryParser;
+using namespace graph_db::query_parser;
 
 std::vector<Token> GetAllTokens(QueryLexer& lexer) {
     std::vector<Token> tokens;
@@ -16,7 +16,7 @@ std::vector<Token> GetAllTokens(QueryLexer& lexer) {
 template<class T>
 void ASSERT_VECTOR_EQ(std::vector<T>& v1, std::vector<T>& v2) {
     ASSERT_EQ(v1.size(), v2.size());
-    for (int i = 0; i < v1.size(); ++i) {
+    for (unsigned long i = 0; i < v1.size(); ++i) {
         ASSERT_EQ(v1[i], v2[i]);
     }
 }

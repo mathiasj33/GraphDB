@@ -5,7 +5,7 @@
 
 namespace graph_db::evaluation {
 
-    using namespace queryParser;
+    using namespace query_parser;
     using namespace index;
 
     /**

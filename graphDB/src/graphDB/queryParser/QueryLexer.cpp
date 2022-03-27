@@ -2,7 +2,7 @@
 #include <cassert>
 #include <algorithm>
 
-namespace graph_db::queryParser {
+namespace graph_db::query_parser {
     Token QueryLexer::PeekToken() {
         if (!nextToken) {
             nextToken = std::make_unique<Token>(ConsumeToken());
