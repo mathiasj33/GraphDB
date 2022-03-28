@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <cassert>
+#include <cstring>
 
 namespace graph_db::index {
 
@@ -17,13 +18,64 @@ namespace graph_db::index {
             bool used = false;
         };
 
-        explicit LinearProbingIndex(int initialSize = 16, float maxLoadFactor = 0.5f) : hashFunction(Hash()),
-                                                                                        maxLoadFactor(maxLoadFactor) {
+        explicit LinearProbingIndex(int initialSize = 16, float maxLoadFactor = 0.5f) : numBuckets(initialSize),
+                                                                                        maxLoadFactor(maxLoadFactor),
+                                                                                        hashFunction(Hash()),
+                                                                                        buckets(new Bucket[numBuckets]) {
             assert(maxLoadFactor < 1);
-            buckets.reserve(initialSize);
-            for (int i = 0; i < initialSize; ++i) {
-                buckets.emplace_back();
+        }
+
+        LinearProbingIndex(const LinearProbingIndex& other) : LinearProbingIndex(other.numBuckets,
+                                                                                 other.maxLoadFactor) {
+            numEntries = other.numEntries;
+            std::memcpy(buckets, other.buckets, numBuckets);
+        }
+
+        LinearProbingIndex(LinearProbingIndex&& other) noexcept
+                : numBuckets(other.numBuckets), maxLoadFactor(other.maxLoadFactor), hashFunction(other.hashFunction),
+                  numEntries(other.numEntries), buckets(other.buckets) {
+            other.numBuckets = 0;
+            other.numEntries = 0;
+            other.buckets = nullptr;
+        }
+
+        ~LinearProbingIndex() {
+            delete[] buckets;
+        }
+
+        LinearProbingIndex& operator=(const LinearProbingIndex& other) {
+            if (this == &other) {
+                return *this;
             }
+            numEntries = other.numEntries;
+            maxLoadFactor = other.maxLoadFactor;
+            hashFunction = other.hashFunction;
+            if (numBuckets != other.numBuckets) {
+                delete[] buckets;
+                numBuckets = other.numBuckets;
+                buckets = new Bucket[numBuckets];
+            }
+            std::memcpy(buckets, other.buckets, numBuckets);
+            return *this;
+        }
+
+        LinearProbingIndex& operator=(LinearProbingIndex&& other) noexcept {
+            if(this == &other) {
+                return *this;
+            }
+            numBuckets = other.numBuckets;
+            maxLoadFactor = other.maxLoadFactor;
+            hashFunction = other.hashFunction;
+            numEntries = other.numEntries;
+
+            delete[] buckets;
+            buckets = other.buckets;
+
+            other.numBuckets = 0;
+            other.numEntries = 0;
+            other.buckets = nullptr;
+
+            return *this;
         }
 
         V& operator[](const K& k) {
@@ -64,45 +116,46 @@ namespace graph_db::index {
         }
 
         [[nodiscard]] float loadFactor() const {
-            return static_cast<float>(numEntries) / buckets.size();
+            return static_cast<float>(numEntries) / numBuckets;
         }
 
     private:
-        Hash hashFunction;
+        unsigned numBuckets;
         float maxLoadFactor;
+        Hash hashFunction;
         unsigned numEntries = 0;
-        std::vector<Bucket> buckets;
+        Bucket* buckets;
 
         unsigned ComputeHash(const K& k) const {
-            return hashFunction(k) % buckets.size();
+            return hashFunction(k) % numBuckets;
         }
 
         unsigned ProbeBucket(const K& k) const {
             unsigned bucketIndex = ComputeHash(k);
             while (buckets[bucketIndex].used && buckets[bucketIndex].first != k) {
-                bucketIndex = (bucketIndex + 1) % buckets.size();
+                bucketIndex = (bucketIndex + 1) % numBuckets;
             }
             return bucketIndex;
         }
 
         [[nodiscard]] float GetLoadFactor(unsigned numEntries) const {
-            return static_cast<float>(numEntries) / buckets.size();
+            return static_cast<float>(numEntries) / numBuckets;
         }
 
         void Rehash() {
-            auto oldBuckets = std::move(buckets);
+            Bucket* oldBuckets = buckets;
             auto oldNumEntries = numEntries;
-            buckets = std::vector<Bucket>();
-            buckets.reserve(oldBuckets.size() * 2);
-            for (auto i = 0; i < oldBuckets.size() * 2; ++i) {
-                buckets.emplace_back();
-            }
-            for (auto& bucket : oldBuckets) {
+            auto oldNumBuckets = numBuckets;
+            numBuckets *= 2;
+            buckets = new Bucket[numBuckets];
+            for (int i = 0; i < oldNumBuckets; ++i) {
+                Bucket& bucket = oldBuckets[i];
                 if (bucket.used) {
                     (*this)[std::move(bucket.first)] = std::move(bucket.second);
                 }
             }
             numEntries = oldNumEntries;
+            delete[] oldBuckets;
         }
     };
 
