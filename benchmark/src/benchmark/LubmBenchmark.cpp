@@ -18,18 +18,28 @@ namespace graph_db::benchmark {
     void LubmBenchmark::Run() {  // TODO: follow experimental protocol described in paper
         auto queries = GetQueries();
         for (int i = 0; i < queries.size(); ++i) {
-            std::cout << "Evaluating query " << i + 1 << "." << std::endl;
-            char queryFilename[20];
-            sprintf(queryFilename, "q%02d.txt", i + 1);
-            const auto& query = queries[queryFilename];
-
-            auto start = high_resolution_clock::now();
-            unsigned count = db.ComputeQueryAnswers(query, true);
-            double elapsedTime = GetElapsedTime(start);
-
-            std::cout << count << " results returned in " << elapsedTime << "ms." << std::endl << std::endl;
-            results.emplace_back(elapsedTime, count);
+            RunQuery(i + 1, queries);
         }
+    }
+
+    void LubmBenchmark::RunQuery(int i) {
+        RunQuery(i, GetQueries());
+    }
+
+    void LubmBenchmark::RunQuery(int i, const std::unordered_map<std::string, std::string>& queries) {
+        std::cout << "Evaluating query " << i << "." << std::endl;
+        char queryFilename[20];
+        sprintf(queryFilename, "q%02d.txt", i);
+        auto search = queries.find(queryFilename);
+        assert(search != queries.end());
+        const auto& query = search->second;
+
+        auto start = high_resolution_clock::now();
+        unsigned count = db.ComputeQueryAnswers(query, true);
+        double elapsedTime = GetElapsedTime(start);
+
+        std::cout << count << " results returned in " << elapsedTime << "ms." << std::endl << std::endl;
+        results.emplace_back(elapsedTime, count);
     }
 
     void LubmBenchmark::LoadData(LubmBenchmark::Size size) {

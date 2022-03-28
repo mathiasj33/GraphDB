@@ -20,5 +20,7 @@ int main() {
     SummaryPrinter printer;
     printer.PrintSummary(results);
 
+    // LubmBenchmark{LubmBenchmark::Size::MEDIUM}.RunQuery(7);
+
     return 0;
 }
