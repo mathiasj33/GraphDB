@@ -15,25 +15,28 @@ namespace graph_db::index {
         struct Bucket {
             K first{};
             V second{};
-            bool used = false;
         };
 
         explicit LinearProbingIndex(int initialSize = 16, float maxLoadFactor = 0.5f) : numBuckets(initialSize),
                                                                                         maxLoadFactor(maxLoadFactor),
                                                                                         hashFunction(Hash()),
-                                                                                        buckets(new Bucket[numBuckets]) {
+                                                                                        buckets(new Bucket[numBuckets]),
+                                                                                        used(numBuckets, false) {
             assert(maxLoadFactor < 1);
         }
 
-        LinearProbingIndex(const LinearProbingIndex& other) : LinearProbingIndex(other.numBuckets,
-                                                                                 other.maxLoadFactor) {
-            numEntries = other.numEntries;
+        LinearProbingIndex(const LinearProbingIndex& other) : numBuckets(other.numBuckets),
+                                                              maxLoadFactor(other.maxLoadFactor),
+                                                              hashFunction(other.hashFunction),
+                                                              numEntries(other.numEntries),
+                                                              buckets(new Bucket[numBuckets]),
+                                                              used(other.used) {
             std::memcpy(buckets, other.buckets, numBuckets);
         }
 
         LinearProbingIndex(LinearProbingIndex&& other) noexcept
                 : numBuckets(other.numBuckets), maxLoadFactor(other.maxLoadFactor), hashFunction(other.hashFunction),
-                  numEntries(other.numEntries), buckets(other.buckets) {
+                  numEntries(other.numEntries), buckets(other.buckets), used(other.used) {
             other.numBuckets = 0;
             other.numEntries = 0;
             other.buckets = nullptr;
@@ -50,6 +53,7 @@ namespace graph_db::index {
             numEntries = other.numEntries;
             maxLoadFactor = other.maxLoadFactor;
             hashFunction = other.hashFunction;
+            used = std::move(other.used);
             if (numBuckets != other.numBuckets) {
                 delete[] buckets;
                 numBuckets = other.numBuckets;
@@ -60,13 +64,14 @@ namespace graph_db::index {
         }
 
         LinearProbingIndex& operator=(LinearProbingIndex&& other) noexcept {
-            if(this == &other) {
+            if (this == &other) {
                 return *this;
             }
             numBuckets = other.numBuckets;
             maxLoadFactor = other.maxLoadFactor;
             hashFunction = other.hashFunction;
             numEntries = other.numEntries;
+            used = std::move(other.used);
 
             delete[] buckets;
             buckets = other.buckets;
@@ -84,8 +89,9 @@ namespace graph_db::index {
         }
 
         V& operator[](K&& k) {
-            Bucket& bucket = buckets[ProbeBucket(k)];
-            if (bucket.used) {
+            unsigned index = ProbeBucket(k);
+            Bucket& bucket = buckets[index];
+            if (used[index]) {
                 return bucket.second;
             }
             // insert
@@ -95,16 +101,16 @@ namespace graph_db::index {
             }
             ++numEntries;
             bucket.first = std::move(k);
-            bucket.used = true;
+            used[index] = true;
             return bucket.second;
         }
 
         const Bucket* find(const K& k) const {
-            const Bucket* bucket = &buckets[ProbeBucket(k)];
-            if (!bucket->used) {
+            unsigned index = ProbeBucket(k);
+            if (!used[index]) {
                 return nullptr;
             }
-            return bucket;
+            return &buckets[index];
         }
 
         const Bucket* end() const {
@@ -125,6 +131,7 @@ namespace graph_db::index {
         Hash hashFunction;
         unsigned numEntries = 0;
         Bucket* buckets;
+        std::vector<bool> used;
 
         unsigned ComputeHash(const K& k) const {
             return hashFunction(k) % numBuckets;
@@ -132,7 +139,7 @@ namespace graph_db::index {
 
         unsigned ProbeBucket(const K& k) const {
             unsigned bucketIndex = ComputeHash(k);
-            while (buckets[bucketIndex].used && buckets[bucketIndex].first != k) {
+            while (used[bucketIndex] && buckets[bucketIndex].first != k) {
                 bucketIndex = (bucketIndex + 1) % numBuckets;
             }
             return bucketIndex;
@@ -144,13 +151,15 @@ namespace graph_db::index {
 
         void Rehash() {
             Bucket* oldBuckets = buckets;
+            auto oldUsed = std::move(used);
             auto oldNumEntries = numEntries;
             auto oldNumBuckets = numBuckets;
             numBuckets *= 2;
             buckets = new Bucket[numBuckets];
+            used = std::vector<bool>(numBuckets, false);
             for (int i = 0; i < oldNumBuckets; ++i) {
                 Bucket& bucket = oldBuckets[i];
-                if (bucket.used) {
+                if (oldUsed[i]) {
                     (*this)[std::move(bucket.first)] = std::move(bucket.second);
                 }
             }
