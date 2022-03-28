@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
-#include "graphDB/index/Dictionary.h"
 #include "graphDB/index/LinearProbingIndex.h"
+#include "graphDB/index/RobinHoodIndex.h"
 #include "graphDB/index/TwoHashKey.h"
 
 using namespace graph_db::index;

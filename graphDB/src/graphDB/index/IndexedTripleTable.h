@@ -10,6 +10,7 @@
 #include "Dictionary.h"
 #include "Triple.h"
 #include "LinearProbingIndex.h"
+#include "RobinHoodIndex.h"
 
 namespace graph_db::evaluation {
     class Scan;
