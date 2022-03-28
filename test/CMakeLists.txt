@@ -1,9 +1,10 @@
 SET(TEST_SOURCES
+        Tester.cpp
+
         graphDB/test_GraphDB.cpp
         graphDB/index/test_Dictionary.cpp
         graphDB/index/test_IndexedTripleTable.cpp
-
-        Tester.cpp
+        graphDB/index/test_LinearProbingIndex.cpp
         graphDB/evaluation/test_Scan.cpp
         graphDB/evaluation/ScanTestFixture.h
         graphDB/evaluation/test_QueryAnswerer.cpp

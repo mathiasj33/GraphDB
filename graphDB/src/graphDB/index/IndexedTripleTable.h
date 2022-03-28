@@ -9,6 +9,7 @@
 #include "VectorIndex.h"
 #include "Dictionary.h"
 #include "Triple.h"
+#include "LinearProbingIndex.h"
 
 namespace graph_db::evaluation {
     class Scan;
@@ -41,17 +42,17 @@ namespace graph_db::index {
 
     private:
         std::vector<Triple> table;
-        std::unordered_map<ThreeHashKey, unsigned, ThreeHashKey::HashFunction> indexSPO;
+        LinearProbingIndex<ThreeHashKey, unsigned, ThreeHashKey::HashFunction> indexSPO;
         /**
          * Maps to the head of the s-list (first element) and keeps track of its size (second element).
          */
         VectorIndex<std::pair<unsigned, unsigned>> indexS;
-        std::unordered_map<TwoHashKey, unsigned, TwoHashKey::HashFunction> indexSP;
+        LinearProbingIndex<TwoHashKey, unsigned, TwoHashKey::HashFunction> indexSP;
         /**
          * Maps to the head of the p-list (first element) and keeps track of its size (second element).
          */
         VectorIndex<std::pair<unsigned, unsigned>> indexO;
-        std::unordered_map<TwoHashKey, unsigned, TwoHashKey::HashFunction> indexOP;
+        LinearProbingIndex<TwoHashKey, unsigned, TwoHashKey::HashFunction> indexOP;
         VectorIndex<unsigned> indexP;
 
         void UpdateSPIndex(Triple& triple, unsigned triplePtr);
