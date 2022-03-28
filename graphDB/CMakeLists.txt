@@ -33,7 +33,7 @@ SET(GRAPHDB_SOURCES
         src/graphDB/fileParser/FileParser.cpp
         src/graphDB/fileParser/FileParser.h
         src/graphDB/queryOptimiser/QueryOptimiser.cpp
-        src/graphDB/queryOptimiser/QueryOptimiser.h src/graphDB/index/LinearProbingIndex.h)
+        src/graphDB/queryOptimiser/QueryOptimiser.h src/graphDB/index/LinearProbingIndex.h src/graphDB/hash/SpookyHash.cpp src/graphDB/hash/SpookyHash.h)
 
 add_library(graphDB STATIC ${GRAPHDB_SOURCES})
 target_include_directories(graphDB PUBLIC src/)

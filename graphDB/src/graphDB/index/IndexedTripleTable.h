@@ -42,17 +42,17 @@ namespace graph_db::index {
 
     private:
         std::vector<Triple> table;
-        LinearProbingIndex<ThreeHashKey, unsigned, ThreeHashKey::HashFunction> indexSPO;
+        LinearProbingIndex<ThreeHashKey, unsigned, ThreeHashKey::SpookyHashFunction> indexSPO;
         /**
          * Maps to the head of the s-list (first element) and keeps track of its size (second element).
          */
         VectorIndex<std::pair<unsigned, unsigned>> indexS;
-        LinearProbingIndex<TwoHashKey, unsigned, TwoHashKey::HashFunction> indexSP;
+        LinearProbingIndex<TwoHashKey, unsigned, TwoHashKey::SpookyHashFunction> indexSP;
         /**
          * Maps to the head of the p-list (first element) and keeps track of its size (second element).
          */
         VectorIndex<std::pair<unsigned, unsigned>> indexO;
-        LinearProbingIndex<TwoHashKey, unsigned, TwoHashKey::HashFunction> indexOP;
+        LinearProbingIndex<TwoHashKey, unsigned, TwoHashKey::SpookyHashFunction> indexOP;
         VectorIndex<unsigned> indexP;
 
         void UpdateSPIndex(Triple& triple, unsigned triplePtr);

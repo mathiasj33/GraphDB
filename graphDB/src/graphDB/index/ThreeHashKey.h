@@ -1,4 +1,7 @@
 #pragma once
+#include "graphDB/hash/SpookyHash.h"
+
+using namespace graph_db::hash;
 
 namespace graph_db::index {
     struct ThreeHashKey {
@@ -23,6 +26,12 @@ namespace graph_db::index {
                 res = res * 31 + std::hash<unsigned>()(key.b);
                 res = res * 31 + std::hash<unsigned>()(key.c);
                 return res;
+            }
+        };
+
+        struct SpookyHashFunction {
+            std::size_t operator()(const ThreeHashKey& key) const {
+                return SpookyHash::Hash32(&key, sizeof(ThreeHashKey), 17);
             }
         };
     };
