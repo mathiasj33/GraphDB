@@ -71,6 +71,7 @@ namespace graph_db::query_optimiser {
             return 0;
         }
         assert(false);
+        return 0;
     }
 
     bool QueryOptimiser::ContainsBoundVariables(const TriplePattern& pattern,

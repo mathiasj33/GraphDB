@@ -2,7 +2,7 @@
 
 namespace graph_db::evaluation {
 
-    bool ScanSingleValue::Matches(const Triple& triple) {
+    bool ScanSingleValue::Matches(const Triple&) {
         return true;
     }
 

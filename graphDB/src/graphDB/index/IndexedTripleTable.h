@@ -29,14 +29,14 @@ namespace graph_db::index {
 
         void Add(unsigned s, unsigned p, unsigned o);
 
-        std::unique_ptr<evaluation::Scan> Contains(unsigned s, unsigned p, unsigned o) const;
-        std::unique_ptr<evaluation::Scan> EvaluateS(unsigned p, unsigned o) const;
-        std::unique_ptr<evaluation::Scan> EvaluateP(unsigned s, unsigned o) const;
-        std::unique_ptr<evaluation::Scan> EvaluateO(unsigned s, unsigned p) const;
-        std::unique_ptr<evaluation::Scan> EvaluateSP(unsigned o, bool spEqual) const;
-        std::unique_ptr<evaluation::Scan> EvaluateSO(unsigned p, bool soEqual) const;
-        std::unique_ptr<evaluation::Scan> EvaluatePO(unsigned s, bool poEqual) const;
-        std::unique_ptr<evaluation::Scan> EvaluateSPO(bool spEqual, bool poEqual, bool soEqual) const;
+        [[nodiscard]] std::unique_ptr<evaluation::Scan> Contains(unsigned s, unsigned p, unsigned o) const;
+        [[nodiscard]] std::unique_ptr<evaluation::Scan> EvaluateS(unsigned p, unsigned o) const;
+        [[nodiscard]] std::unique_ptr<evaluation::Scan> EvaluateP(unsigned s, unsigned o) const;
+        [[nodiscard]] std::unique_ptr<evaluation::Scan> EvaluateO(unsigned s, unsigned p) const;
+        [[nodiscard]] std::unique_ptr<evaluation::Scan> EvaluateSP(unsigned o, bool spEqual) const;
+        [[nodiscard]] std::unique_ptr<evaluation::Scan> EvaluateSO(unsigned p, bool soEqual) const;
+        [[nodiscard]] std::unique_ptr<evaluation::Scan> EvaluatePO(unsigned s, bool poEqual) const;
+        [[nodiscard]] std::unique_ptr<evaluation::Scan> EvaluateSPO(bool spEqual, bool poEqual, bool soEqual) const;
 
         const Triple& operator[](unsigned index) const;
         unsigned size() const;

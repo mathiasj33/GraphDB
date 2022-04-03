@@ -157,7 +157,7 @@ namespace graph_db::index {
             numBuckets *= 2;
             buckets = new Bucket[numBuckets];
             used = std::vector<bool>(numBuckets, false);
-            for (int i = 0; i < oldNumBuckets; ++i) {
+            for (unsigned i = 0; i < oldNumBuckets; ++i) {
                 Bucket& bucket = oldBuckets[i];
                 if (oldUsed[i]) {
                     (*this)[std::move(bucket.first)] = std::move(bucket.second);

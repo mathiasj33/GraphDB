@@ -17,7 +17,7 @@ namespace graph_db::benchmark {
 
     void LubmBenchmark::Run() {  // TODO: follow experimental protocol described in paper
         auto queries = GetQueries();
-        for (int i = 0; i < queries.size(); ++i) {
+        for (long unsigned i = 0; i < queries.size(); ++i) {
             RunQuery(i + 1, queries);
         }
     }
@@ -59,6 +59,8 @@ namespace graph_db::benchmark {
             case LARGE:
                 return "data/LUBM-100-mat.ttl";
         }
+        assert(false);
+        return "";
     }
 
     std::unordered_map<std::string, std::string> LubmBenchmark::GetQueries() {

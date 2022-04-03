@@ -118,6 +118,7 @@ namespace graph_db::evaluation {
             return table.Contains(scanInfo.s, scanInfo.p, scanInfo.o);
         }
         assert(false);
+        return nullptr;
     }
 
     void QueryAnswerer::UpdateAssignment(const TriplePattern& triplePattern,
