@@ -17,10 +17,7 @@ int main() {
     RunBenchmark(LubmBenchmark::Size::MEDIUM, results.loadingTimeMedium, results.resultsMedium);
     RunBenchmark(LubmBenchmark::Size::LARGE, results.loadingTimeLarge, results.resultsLarge);
 
-    SummaryPrinter printer;
-    printer.PrintSummary(results);
-
-    // LubmBenchmark{LubmBenchmark::Size::MEDIUM}.RunQuery(7);
+    SummaryPrinter::PrintSummary(results);
 
     return 0;
 }

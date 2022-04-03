@@ -7,20 +7,20 @@ namespace graph_db::benchmark {
 
     class SummaryPrinter {
     public:
-        void PrintSummary(const ResultsTable& results) const;
+        static void PrintSummary(const ResultsTable& results);
 
     private:
-        int mainWidth = 15;
-        int firstWidth = 8;
+        const static int MAIN_WIDTH = 15;
+        const static int FIRST_WIDTH = 8;
 
-        void PrintHeader() const;
-        void PrintLoadingTimes(const ResultsTable& results) const;
-        void PrintMainTable(const ResultsTable& results) const;
-        void PrintMainCell(std::string_view content) const;
-        void PrintFirstCell(std::string_view content) const;
-        void PrintTimeCell(double time) const;
-        void PrintQueryCell(unsigned query) const;
-        void PrintDelimiter(char delimiter) const;
+        static void PrintHeader();
+        static void PrintLoadingTimes(const ResultsTable& results);
+        static void PrintMainTable(const ResultsTable& results);
+        static void PrintMainCell(std::string_view content);
+        static void PrintFirstCell(std::string_view content);
+        static void PrintTimeCell(double time);
+        static void PrintQueryCell(unsigned query);
+        static void PrintDelimiter(char delimiter);
     };
 
 }
