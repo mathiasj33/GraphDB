@@ -1,7 +1,7 @@
 #include "FileParser.h"
 
 namespace graph_db::file_parser {
-    bool FileParser::ParseLine(const char* line, unsigned n, unsigned int& s, unsigned int& p, unsigned int& o) {
+    bool FileParser::ParseLine(const char* line, unsigned n, unsigned& s, unsigned& p, unsigned& o) {
         current = 0;
         this->line = line;
         length = n;
@@ -13,7 +13,7 @@ namespace graph_db::file_parser {
         return true;
     }
 
-    bool FileParser::ParseResource(unsigned int& result) {
+    bool FileParser::ParseResource(unsigned& result) {
         std::string string = GetResourceString();
         if(string.empty()) {
             return false;

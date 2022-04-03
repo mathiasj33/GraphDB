@@ -54,7 +54,7 @@ namespace graph_db::benchmark {
         PrintMainCell(c);
     }
 
-    void SummaryPrinter::PrintQueryCell(unsigned int query) {
+    void SummaryPrinter::PrintQueryCell(unsigned query) {
         std::string queryString = "Query " + std::to_string(query);
         PrintFirstCell(queryString);
     }

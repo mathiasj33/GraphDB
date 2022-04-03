@@ -11,7 +11,7 @@ namespace graph_db::evaluation {
             O
         };
 
-        ScanSorO(const IndexedTripleTable& table, unsigned int first, Column outputColumn, unsigned int p);
+        ScanSorO(const IndexedTripleTable& table, unsigned first, Column outputColumn, unsigned p);
 
         ~ScanSorO() override = default;
         

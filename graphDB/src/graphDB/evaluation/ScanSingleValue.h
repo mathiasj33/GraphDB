@@ -10,7 +10,7 @@ namespace graph_db::evaluation {
      */
     class ScanSingleValue : public Scan {
     public:
-        ScanSingleValue(const IndexedTripleTable& table, unsigned int first) : Scan(table, first) {}
+        ScanSingleValue(const IndexedTripleTable& table, unsigned first) : Scan(table, first) {}
 
         ~ScanSingleValue() override = default;
     protected:

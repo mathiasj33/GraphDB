@@ -10,7 +10,7 @@ namespace graph_db::evaluation {
      */
     class FullScan : public Scan {
     public:
-        FullScan(const IndexedTripleTable& table, unsigned int first, bool spEqual, bool poEqual, bool soEqual);
+        FullScan(const IndexedTripleTable& table, unsigned first, bool spEqual, bool poEqual, bool soEqual);
 
         ~FullScan() override = default;
         

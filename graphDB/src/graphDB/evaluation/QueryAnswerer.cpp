@@ -5,7 +5,7 @@
 
 namespace graph_db::evaluation {
     unsigned QueryAnswerer::ComputeQueryAnswers(const Query& query) {
-        std::unordered_map<std::string, unsigned int> assignment;
+        std::unordered_map<std::string, unsigned> assignment;
         unsigned count = 0;
         if (query.print) {
             std::cout << "----------" << std::endl;
@@ -30,7 +30,7 @@ namespace graph_db::evaluation {
     }
 
     void QueryAnswerer::ComputeQueryAnswers(const Query& query, unsigned long index,
-                                            std::unordered_map<std::string, unsigned int>& assignment,
+                                            std::unordered_map<std::string, unsigned>& assignment,
                                             unsigned& count) {
         if (index >= query.triplePatterns.size()) {
             if (query.print) {
@@ -52,7 +52,7 @@ namespace graph_db::evaluation {
     }
 
     QueryAnswerer::ScanInformation QueryAnswerer::GetScanInformation(const TriplePattern& triplePattern,
-                                                                     const std::unordered_map<std::string, unsigned int>& assignment) {
+                                                                     const std::unordered_map<std::string, unsigned>& assignment) {
         ScanInformation scanInfo;
         scanInfo.spEqual = triplePattern.s == triplePattern.p;
         scanInfo.poEqual = triplePattern.p == triplePattern.o;
@@ -63,9 +63,9 @@ namespace graph_db::evaluation {
         return scanInfo;
     }
 
-    void QueryAnswerer::UpdateScanInformation(const std::variant<unsigned int, std::string>& variant, bool& varOut,
-                                              unsigned int& vOut,
-                                              const std::unordered_map<std::string, unsigned int>& assignment) {
+    void QueryAnswerer::UpdateScanInformation(const std::variant<unsigned, std::string>& variant, bool& varOut,
+                                              unsigned& vOut,
+                                              const std::unordered_map<std::string, unsigned>& assignment) {
         if (std::holds_alternative<std::string>(variant)) {
             auto search = assignment.find(std::get<std::string>(variant));
             if (search != assignment.end()) {
@@ -81,7 +81,7 @@ namespace graph_db::evaluation {
     }
 
     void
-    QueryAnswerer::PrintAnswer(const Query& query, const std::unordered_map<std::string, unsigned int>& assignment) {
+    QueryAnswerer::PrintAnswer(const Query& query, const std::unordered_map<std::string, unsigned>& assignment) {
         for (unsigned long i = 0; i < query.projectionVariables.size(); ++i) {
             const auto& v = query.projectionVariables[i];
             auto search = assignment.find(v);
@@ -123,7 +123,7 @@ namespace graph_db::evaluation {
     void QueryAnswerer::UpdateAssignment(const TriplePattern& triplePattern,
                                          const ScanInformation& scanInfo,
                                          unsigned s, unsigned p, unsigned o,
-                                         std::unordered_map<std::string, unsigned int>& assignment) {
+                                         std::unordered_map<std::string, unsigned>& assignment) {
         if (scanInfo.sVariable) {
             assignment[triplePattern.GetSString()] = s;
         }
@@ -137,7 +137,7 @@ namespace graph_db::evaluation {
 
     void QueryAnswerer::UndoAssignmentUpdate(const TriplePattern& triplePattern,
                                              const ScanInformation& scanInfo,
-                                             std::unordered_map<std::string, unsigned int>& assignment) {
+                                             std::unordered_map<std::string, unsigned>& assignment) {
         if (scanInfo.sVariable) {
             assignment.erase(triplePattern.GetSString());
         }

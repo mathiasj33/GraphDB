@@ -55,7 +55,7 @@ namespace graph_db::index {
         }
     }
 
-    void IndexedTripleTable::UpdateOPIndex(Triple& triple, unsigned int triplePtr) {
+    void IndexedTripleTable::UpdateOPIndex(Triple& triple, unsigned triplePtr) {
         unsigned o = triple.o;
         unsigned p = triple.p;
         TwoHashKey opKey{o, p};
@@ -79,7 +79,7 @@ namespace graph_db::index {
         }
     }
 
-    void IndexedTripleTable::UpdatePIndex(Triple& triple, unsigned int triplePtr) {
+    void IndexedTripleTable::UpdatePIndex(Triple& triple, unsigned triplePtr) {
         unsigned p = triple.p;
         if (indexP.Contains(p)) {
             triple.nextP = indexP[p];
@@ -87,7 +87,7 @@ namespace graph_db::index {
         indexP[p] = triplePtr;
     }
 
-    const Triple& IndexedTripleTable::operator[](unsigned int index) const {
+    const Triple& IndexedTripleTable::operator[](unsigned index) const {
         return table[index - 1];  // account for indexing starting with 1
     }
 
@@ -95,19 +95,19 @@ namespace graph_db::index {
         return table.size();
     }
 
-    std::unique_ptr<evaluation::Scan> IndexedTripleTable::Contains(unsigned int s, unsigned int p, unsigned int o) const {
+    std::unique_ptr<evaluation::Scan> IndexedTripleTable::Contains(unsigned s, unsigned p, unsigned o) const {
         auto search = indexSPO.find(ThreeHashKey{s, p, o});
         unsigned first = search == indexSPO.end() ? Dictionary::INVALID_ID : search->second;
         return std::make_unique<ScanSingleValue>(*this, first);
     }
 
-    std::unique_ptr<evaluation::Scan> IndexedTripleTable::EvaluateS(unsigned int p, unsigned int o) const {
+    std::unique_ptr<evaluation::Scan> IndexedTripleTable::EvaluateS(unsigned p, unsigned o) const {
         auto search = indexOP.find(TwoHashKey{o, p});
         unsigned first = search == indexOP.end() ? Dictionary::INVALID_ID : search->second;
         return std::make_unique<ScanSorO>(*this, first, ScanSorO::Column::S, p);
     }
 
-    std::unique_ptr<evaluation::Scan> IndexedTripleTable::EvaluateP(unsigned int s, unsigned int o) const {
+    std::unique_ptr<evaluation::Scan> IndexedTripleTable::EvaluateP(unsigned s, unsigned o) const {
         if(!indexS.Contains(s) || !indexO.Contains(o)) {
             return std::make_unique<ScanP>(*this, Dictionary::INVALID_ID, ScanP::ScanList::S, s, o);
         }
@@ -118,23 +118,23 @@ namespace graph_db::index {
         return std::make_unique<ScanP>(*this, head, scanList, s, o);
     }
 
-    std::unique_ptr<evaluation::Scan> IndexedTripleTable::EvaluateO(unsigned int s, unsigned int p) const {
+    std::unique_ptr<evaluation::Scan> IndexedTripleTable::EvaluateO(unsigned s, unsigned p) const {
         auto search = indexSP.find(TwoHashKey{s, p});
         unsigned first = search == indexSP.end() ? Dictionary::INVALID_ID : search->second;
         return std::make_unique<ScanSorO>(*this, first, ScanSorO::Column::O, p);
     }
 
-    std::unique_ptr<evaluation::Scan> IndexedTripleTable::EvaluateSP(unsigned int o, bool spEqual) const {
+    std::unique_ptr<evaluation::Scan> IndexedTripleTable::EvaluateSP(unsigned o, bool spEqual) const {
         unsigned first = indexO.Contains(o) ? indexO[o].first : Dictionary::INVALID_ID;
         return std::make_unique<ScanTwoVariables>(*this, first, spEqual, ScanTwoVariables::ScanList::O);
     }
 
-    std::unique_ptr<evaluation::Scan> IndexedTripleTable::EvaluateSO(unsigned int p, bool soEqual) const {
+    std::unique_ptr<evaluation::Scan> IndexedTripleTable::EvaluateSO(unsigned p, bool soEqual) const {
         unsigned first = indexP.Contains(p) ? indexP[p] : Dictionary::INVALID_ID;
         return std::make_unique<ScanTwoVariables>(*this, first, soEqual, ScanTwoVariables::ScanList::P);
     }
 
-    std::unique_ptr<evaluation::Scan> IndexedTripleTable::EvaluatePO(unsigned int s, bool poEqual) const {
+    std::unique_ptr<evaluation::Scan> IndexedTripleTable::EvaluatePO(unsigned s, bool poEqual) const {
         unsigned first = indexS.Contains(s) ? indexS[s].first : Dictionary::INVALID_ID;
         return std::make_unique<ScanTwoVariables>(*this, first, poEqual, ScanTwoVariables::ScanList::S);
     }

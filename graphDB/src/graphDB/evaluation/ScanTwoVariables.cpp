@@ -1,7 +1,7 @@
 #include "ScanTwoVariables.h"
 
 namespace graph_db::evaluation {
-    ScanTwoVariables::ScanTwoVariables(const IndexedTripleTable& table, unsigned int first, bool equal,
+    ScanTwoVariables::ScanTwoVariables(const IndexedTripleTable& table, unsigned first, bool equal,
                                        ScanTwoVariables::ScanList scanList)
             : Scan(table, first), equal(equal), scanList(scanList) {
         MoveToNextMatchingElement();

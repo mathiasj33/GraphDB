@@ -11,7 +11,7 @@ namespace graph_db::evaluation {
             O
         };
 
-        ScanP(const IndexedTripleTable& table, unsigned int first, ScanList scanList, unsigned int s, unsigned int o);
+        ScanP(const IndexedTripleTable& table, unsigned first, ScanList scanList, unsigned s, unsigned o);
 
         ~ScanP() override = default;
 

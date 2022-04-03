@@ -1,8 +1,8 @@
 #include "ScanP.h"
 
 namespace graph_db::evaluation {
-    ScanP::ScanP(const IndexedTripleTable& table, unsigned int first, ScanP::ScanList scanList, unsigned int s,
-                 unsigned int o) : Scan(table, first), scanList(scanList), s(s), o(o) {
+    ScanP::ScanP(const IndexedTripleTable& table, unsigned first, ScanP::ScanList scanList, unsigned s,
+                 unsigned o) : Scan(table, first), scanList(scanList), s(s), o(o) {
         MoveToNextMatchingElement();
     }
 

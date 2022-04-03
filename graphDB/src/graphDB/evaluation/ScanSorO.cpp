@@ -1,8 +1,8 @@
 #include "ScanSorO.h"
 
 namespace graph_db::evaluation {
-    ScanSorO::ScanSorO(const IndexedTripleTable& table, unsigned int first, ScanSorO::Column outputColumn,
-                       unsigned int p) : Scan(table, first), outputColumn(outputColumn), p(p) {
+    ScanSorO::ScanSorO(const IndexedTripleTable& table, unsigned first, ScanSorO::Column outputColumn,
+                       unsigned p) : Scan(table, first), outputColumn(outputColumn), p(p) {
         MoveToNextMatchingElement();
     }
 

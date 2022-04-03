@@ -2,7 +2,7 @@
 
 namespace graph_db::evaluation {
 
-    void Scan::GetNext(unsigned int& sOut, unsigned int& pOut, unsigned int& oOut) {
+    void Scan::GetNext(unsigned& sOut, unsigned& pOut, unsigned& oOut) {
         assert(!ReachedEnd() && Matches(table[current]));
 
         const Triple& t = table[current];

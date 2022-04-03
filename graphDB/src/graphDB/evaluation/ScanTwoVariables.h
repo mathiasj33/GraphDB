@@ -19,7 +19,7 @@ namespace graph_db::evaluation {
          * @param equal: denotes whether the two variables in the query are equal, i.e. <s, ?X, ?X>.
          * @param scanList: the list over which to iterate
          */
-        ScanTwoVariables(const IndexedTripleTable& table, unsigned int first, bool equal, ScanList scanList);
+        ScanTwoVariables(const IndexedTripleTable& table, unsigned first, bool equal, ScanList scanList);
 
         ~ScanTwoVariables() override = default;
 
