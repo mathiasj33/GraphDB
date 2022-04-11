@@ -29,6 +29,9 @@ namespace graph_db::query_parser {
         pattern.s = ParseVariableOrResource();
         pattern.p = ParseVariableOrResource();
         pattern.o = ParseVariableOrResource();
+        if (PeekToken(TokenType::RBRACE)) {
+            return pattern;  // make the last dot optional
+        }
         ExpectToken(TokenType::DOT);
         return pattern;
     }
