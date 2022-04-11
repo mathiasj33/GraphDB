@@ -32,6 +32,9 @@ namespace graph_db::evaluation {
     void QueryAnswerer::ComputeQueryAnswers(const Query& query, unsigned long index,
                                             std::unordered_map<std::string, unsigned>& assignment,
                                             unsigned& count) {
+        if (query.projectionVariables.empty()) {
+            return;
+        }
         if (index >= query.triplePatterns.size()) {
             if (query.print) {
                 PrintAnswer(query, assignment);

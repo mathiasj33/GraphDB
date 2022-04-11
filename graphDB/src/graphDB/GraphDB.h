@@ -26,6 +26,8 @@ namespace graph_db {
         FileParser fileParser;
         QueryAnswerer queryAnswerer;
         QueryParser queryParser;
+
+        static void CheckValidQuery(const Query& query);
     };
 
 }
