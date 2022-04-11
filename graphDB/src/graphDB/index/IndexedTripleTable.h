@@ -27,7 +27,7 @@ namespace graph_db::index {
                                indexO(std::make_pair(Dictionary::INVALID_ID, Dictionary::INVALID_ID)),
                                indexP(Dictionary::INVALID_ID) {}
 
-        void Add(unsigned s, unsigned p, unsigned o);
+        bool Add(unsigned s, unsigned p, unsigned o);
 
         [[nodiscard]] std::unique_ptr<evaluation::Scan> Contains(unsigned s, unsigned p, unsigned o) const;
         [[nodiscard]] std::unique_ptr<evaluation::Scan> EvaluateS(unsigned p, unsigned o) const;
@@ -39,7 +39,7 @@ namespace graph_db::index {
         [[nodiscard]] std::unique_ptr<evaluation::Scan> EvaluateSPO(bool spEqual, bool poEqual, bool soEqual) const;
 
         const Triple& operator[](unsigned index) const;
-        unsigned size() const;
+        [[nodiscard]] unsigned size() const;
 
     private:
         std::vector<Triple> table;

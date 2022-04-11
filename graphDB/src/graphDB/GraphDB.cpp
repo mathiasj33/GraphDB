@@ -21,8 +21,9 @@ namespace graph_db {
                 std::cout << "Error parsing input file." << std::endl;
                 break;
             }
-            table.Add(s, p, o);
-            ++count;
+            if(table.Add(s, p, o)) {
+                ++count;
+            }
         }
         fclose(file);
         return count;

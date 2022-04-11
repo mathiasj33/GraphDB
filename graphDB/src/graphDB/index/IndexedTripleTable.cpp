@@ -12,10 +12,10 @@ namespace graph_db::index {
 
     using namespace evaluation;
 
-    void IndexedTripleTable::Add(unsigned s, unsigned p, unsigned o) {
+    bool IndexedTripleTable::Add(unsigned s, unsigned p, unsigned o) {
         ThreeHashKey key{s, p, o};
         if (indexSPO.find(key) != indexSPO.end()) {
-            return;
+            return false;
         }
 
         Triple triple{s, p, o, Dictionary::INVALID_ID, Dictionary::INVALID_ID, Dictionary::INVALID_ID};
@@ -29,6 +29,7 @@ namespace graph_db::index {
         UpdatePIndex(triple, triplePtr);
 
         table.push_back(triple);
+        return true;
     }
 
     void IndexedTripleTable::UpdateSPIndex(Triple& triple, unsigned triplePtr) {
@@ -108,7 +109,7 @@ namespace graph_db::index {
     }
 
     std::unique_ptr<evaluation::Scan> IndexedTripleTable::EvaluateP(unsigned s, unsigned o) const {
-        if(!indexS.Contains(s) || !indexO.Contains(o)) {
+        if (!indexS.Contains(s) || !indexO.Contains(o)) {
             return std::make_unique<ScanP>(*this, Dictionary::INVALID_ID, ScanP::ScanList::S, s, o);
         }
         auto[headS, lengthS] = indexS[s];

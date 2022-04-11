@@ -3,8 +3,8 @@
 namespace graph_db::index {
 
     /**
-     * An entry in the table, containing dictionary encodings of s, s, p, as well as the next pointers for
-     * the linked lists S, P, and O.
+     * An entry in the table, containing dictionary encodings of s, p, o, as well as the next pointers for
+     * the linked lists SP, P, and OP.
      */
     struct Triple {
         unsigned s;

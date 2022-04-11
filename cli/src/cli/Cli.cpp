@@ -7,6 +7,7 @@ using std::chrono::duration;
 using std::chrono::milliseconds;
 
 namespace graph_db::cli {
+
     void Cli::Start() {
         std::cout.precision(2);
         std::cout << std::fixed;
@@ -14,7 +15,9 @@ namespace graph_db::cli {
         while (!quit) {
             std::cout << "> ";
             std::string commandString;
-            std::getline(std::cin, commandString);
+            if(!std::getline(std::cin, commandString)) {
+                break;
+            }
             ParseAndExecuteCommand(std::move(commandString));
         }
     }
@@ -29,6 +32,9 @@ namespace graph_db::cli {
                     ExecuteLoadCommand(command.substr(spacePosition + 1, command.size()));
                     return;
                 } else if (firstWord == "select" || firstWord == "count") {
+                    if (!IsFinishedQuery(command)) {
+                        command = ParseMultiLineQuery(std::move(command));
+                    }
                     ExecuteQueryCommand(command);
                     return;
                 }
@@ -51,6 +57,31 @@ namespace graph_db::cli {
         unsigned count = db.LoadFile(filename);
         double elapsedTime = GetElapsedTime(start);
         std::cout << count << " triples loaded in " << elapsedTime << "ms." << std::endl;
+    }
+
+    bool Cli::IsFinishedQuery(std::string_view command) {
+        int pos = command.size() - 1;
+        while (command[pos] == ' ' || command[pos] == '\t' || command[pos] == '\n') {
+            --pos;
+        }
+        if (pos < 0) {
+            throw std::runtime_error("Error while parsing query.");
+        }
+        return command[pos] == '}';
+    }
+
+    std::string Cli::ParseMultiLineQuery(std::string partialQuery) {
+        while (true) {
+            std::string restOfQuery;
+            if(!std::getline(std::cin, restOfQuery)) {
+                std::cout << "Shutting down." << std::endl;
+                exit(0);
+            }
+            partialQuery += " " + restOfQuery;
+            if (IsFinishedQuery(partialQuery)) {
+                return partialQuery;
+            }
+        }
     }
 
     void Cli::ExecuteQueryCommand(const std::string& query) {

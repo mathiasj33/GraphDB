@@ -16,6 +16,8 @@ namespace graph_db::cli {
 
         void ParseAndExecuteCommand(std::string command);
         void ExecuteLoadCommand(const std::string& filename);
+        static bool IsFinishedQuery(std::string_view command);
+        static std::string ParseMultiLineQuery(std::string partialQuery);
         void ExecuteQueryCommand(const std::string& query);
         void ExecuteQuitCommand();
         static double GetElapsedTime(std::chrono::high_resolution_clock::time_point start);
