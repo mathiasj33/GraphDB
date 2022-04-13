@@ -15,7 +15,7 @@ namespace graph_db {
             return 0;
         }
         const int BUFFER_SIZE = 1024;
-        char buffer[BUFFER_SIZE];  // TODO: assumption: no lines longer than 1024 characters
+        char buffer[BUFFER_SIZE];  // assumption: no lines longer than 1024 characters
         while (fgets(buffer, BUFFER_SIZE, file) != nullptr) {
             unsigned s, p, o;
             if (!fileParser.ParseLine(buffer, BUFFER_SIZE, s, p, o)) {

@@ -28,7 +28,7 @@ namespace graph_db::file_parser {
         if(begin >= length || (line[begin] != '<' && line[begin] != '"')) {
             return "";
         }
-        char end = line[begin] == '<' ? '>' : '"';  // TODO: assumption: no nesting
+        char end = line[begin] == '<' ? '>' : '"';  // assumption: no nesting
         ++current;
         while (current < length - 1) {
             ++current;

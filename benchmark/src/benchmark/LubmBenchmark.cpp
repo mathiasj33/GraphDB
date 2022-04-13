@@ -15,7 +15,7 @@ namespace graph_db::benchmark {
         LoadData(size);
     }
 
-    void LubmBenchmark::Run() {  // TODO: follow experimental protocol described in paper
+    void LubmBenchmark::Run() {
         auto queries = GetQueries();
         for (long unsigned i = 0; i < queries.size(); ++i) {
             RunQuery(i + 1, queries);

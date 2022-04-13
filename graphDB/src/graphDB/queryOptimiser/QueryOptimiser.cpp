@@ -19,8 +19,9 @@ namespace graph_db::query_optimiser {
             unsigned bestSelectivity = 0;
             for (const TriplePattern& pattern : remainingPatterns) {
                 unsigned selectivity = ComputeSelectivity(pattern, boundVariables);
-                // TODO: explain modification to the algorithm. provide example query.
                 if (pattern.GetVariables().empty() || ContainsBoundVariables(pattern, boundVariables)) {
+                    // this ensures bound variables are always preferred to unbound variables, while still choosing
+                    // the best possible pattern as the very first one
                     selectivity += 10;
                 }
                 if (selectivity >= bestSelectivity) {
